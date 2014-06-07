@@ -1,5 +1,5 @@
 class Image():
-    """Image is a list of displacements"""
+    """Image is a list of values"""
     def __init__(self, xsize, ysize, zsize):
         self.val = [0 for i in range(xsize * ysize * zsize)]
         self.xsize = xsize
@@ -15,8 +15,7 @@ class Image():
                     img += "\n"
                 img += str(self.val[i]) + " "
             img += "\n"
-        img += "[X, Y, Z]: [%d, %d, %d]\n" % (self.xsize, self.ysize,
-                                              self.zsize)
+        img += "(%d, %d, %d)\n" % (self.xsize, self.ysize, self.zsize)
         img += "N: %d" % (self.n())
         return img
 

@@ -6,6 +6,9 @@ class Queue(object):
     def __init__(self):
         self.heap = []
 
+    def __repr__(self):
+        return ", ".join(map(str, self.heap))
+
     def insert(self, el):
         heapq.heappush(self.heap, el)
 
@@ -16,8 +19,10 @@ class Queue(object):
         return heapq.heappop(self.heap)
 
     def remove_elem(self, elem):
-        self.heap.remove(elem)
-        return elem
+        try:
+            self.heap.remove(elem)
+        except ValueError:
+            pass
 
     def empty(self):
         if len(self.heap) == 0:
