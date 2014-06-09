@@ -13,21 +13,22 @@ class Image():
                 # x, y = self.x_coord(i), self.y_coord(i)
                 if i % self.xsize == 0 and i != 0:
                     img += "\n"
-                img += str(self.val[i]) + " "
+                img += "%.1f " % self.val[i]
             img += "\n"
         img += "(%d, %d, %d)\n" % (self.xsize, self.ysize, self.zsize)
         img += "N: %d" % (self.n())
         return img
 
     def create_simple_image(self):
-        self.val = [0, 0, 0, 0, 0,
-                    0, 1, 1, 1, 0,
-                    0, 1, 0, 1, 0,
-                    0, 1, 1, 1, 0,
-                    0, 0, 0, 0, 0]
+        self.val = [0, 0, 0, 0, 0, 0,
+                    0, 1, 1, 1, 0, 0,
+                    0, 1, 0, 1, 0, 0,
+                    0, 1, 0, 1, 0, 0,
+                    0, 1, 1, 1, 0, 0,
+                    0, 0, 0, 0, 0, 0]
         self.zsize = 1
-        self.xsize = 5
-        self.ysize = 5
+        self.xsize = 6
+        self.ysize = 6
 
     def valid_index(self, index):
         if index >= 0 and index < self.n():
