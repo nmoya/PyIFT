@@ -5,6 +5,10 @@ import pyift.adjacency as Adjacency
 import pyift.image as Image
 import pyift.common as Common
 
+# F(<trivial>) = 0
+# F(<path_extension>) = EDT(q, root(p))
+# Min(Paths_t). Minimize all the paths ending in a given pixel t.
+
 # Creating a simple binary image of size 6 x 6.
 # Image is an array not an matrix.
 orig = Image.Image(6, 6, 1)
@@ -25,11 +29,11 @@ distance.assign(Common.INFINITY)
 roots = Image.Image(orig.xsize, orig.ysize, orig.zsize)
 roots.assign(Common.INFINITY)
 
-# 8-neighbour displacement array crated.
+# Adjacency Relation. 8-neighbour displacement array crated.
 A = Adjacency.Adjacency()
 A.circular(orig, math.sqrt(2))
 
-# Queue. Heap is O(n log n).
+# Queue. Implemented as a Heap, which is O(n log n).
 Q = Queue.Queue()
 
 # Trivial initialization of border pixels
@@ -37,25 +41,24 @@ for i, pixel in enumerate(orig.val):
     if pixel is not 0:  # If it is a border pixel
         distance.val[i] = 0  # The distance to the closet border pixel is 0.
         roots.val[i] = i     # You are the closest border pixel.
-        Q.insert(i)          # Go to queue for propagation.
+        Q.insert(i)          # Go to the queue for propagation.
 
 
-# While there are still pixels to propagate
+# While there are still pixels to be processed
 while not Q.empty():
+
     p = Q.remove()  # Remove a pixel (p)
+
     for adj in A.adj[1:]:   # Traverse through its neighbours
         q = p + adj         # Get the neighbour index position in the array (q)
-        if not orig.valid_index(q):  # If the neighbour is not inside the image
-            continue
-        if distance.val[q] > distance.val[p]:  # Optimization.
+        if orig.valid_index(q):  # If the neighbour is inside the image
+
             # Cost function for path extension.
             tmp = Common.euclidean_distance(orig.xyz_coord(roots.val[p]),
                                             orig.xyz_coord(q))
 
             # If the new cost is smaller then the current cost of my neighbor
             if tmp < distance.val[q]:
-                # If I am here, I found a path with a smaller cost!
-
                 # If my neighbour is in the queue,
                 # I must remove it to avoid duplciates.
                 if distance.val[q] != Common.INFINITY:
