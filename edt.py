@@ -6,7 +6,7 @@ import pyift.image as Image
 import pyift.common as Common
 
 # F(<trivial>) = 0
-# F(<path_extension>) = EDT(q, root(p))
+# F(<path_extension>) = euclidean_distance(q, root(p))
 # Min(Paths_t). Minimize all the paths ending in a given pixel t.
 
 # Creating a simple binary image of size 6 x 6.
