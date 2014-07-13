@@ -5,39 +5,76 @@ import pyift.adjacency as Adjacency
 import pyift.image as Image
 import pyift.common as Common
 
+# Creating a simple binary image of size 6 x 6.
+# Image is an array not an matrix.
 orig = Image.Image(6, 6, 1)
 orig.create_simple_image()
+# print orig
+# 0   0   0   0   0   0
+# 0   1   1   1   0   0
+# 0   1   0   1   0   0
+# 0   1   0   1   0   0
+# 0   1   1   1   0   0
+# 0   0   0   0   0   0
 
+# Distance array with INFINITY assigned to each pixel.
 distance = Image.Image(orig.xsize, orig.ysize, orig.zsize)
 distance.assign(Common.INFINITY)
 
+# Root array with 'available' assigned to each pixel.
 roots = Image.Image(orig.xsize, orig.ysize, orig.zsize)
 roots.assign(Common.INFINITY)
 
+# 8-neighbour displacement array crated.
 A = Adjacency.Adjacency()
 A.circular(orig, math.sqrt(2))
 
+# Queue. Heap is O(n log n).
 Q = Queue.Queue()
-for i, pixel in enumerate(orig.val):
-    if pixel is not 0:
-        distance.val[i] = 0
-        roots.val[i] = i
-        Q.insert(i)
 
+# Trivial initialization of border pixels
+for i, pixel in enumerate(orig.val):
+    if pixel is not 0:  # If it is a border pixel
+        distance.val[i] = 0  # The distance to the closet border pixel is 0.
+        roots.val[i] = i     # You are the closest border pixel.
+        Q.insert(i)          # Go to queue for propagation.
+
+
+# While there are still pixels to propagate
 while not Q.empty():
-    p = Q.remove()
-    for adj in A.adj[1:]:
-        q = p + adj
-        if not orig.valid_index(q):
+    p = Q.remove()  # Remove a pixel (p)
+    for adj in A.adj[1:]:   # Traverse through its neighbours
+        q = p + adj         # Get the neighbour index position in the array (q)
+        if not orig.valid_index(q):  # If the neighbour is not inside the image
             continue
-        if distance.val[q] > distance.val[p]:
+        if distance.val[q] > distance.val[p]:  # Optimization.
+            # Cost function for path extension.
             tmp = Common.euclidean_distance(orig.xyz_coord(roots.val[p]),
                                             orig.xyz_coord(q))
+
+            # If the new cost is smaller then the current cost of my neighbor
             if tmp < distance.val[q]:
+                # If I am here, I found a path with a smaller cost!
+
+                # If my neighbour is in the queue,
+                # I must remove it to avoid duplciates.
                 if distance.val[q] != Common.INFINITY:
                     Q.remove_elem(q)
+
+                # The new distace of my neighbor is the cost function extension
                 distance.val[q] = tmp
-                roots.val[q] = p
+
+                # The closest border of my neighbor is the same as mine
+                roots.val[q] = roots.val[p]
+
+                # Keep propagating.
                 Q.insert(q)
 
+
 print distance
+# 1.4   1.0   1.0   1.0   1.4   2.2
+# 1.0   0.0   0.0   0.0   1.0   2.0
+# 1.0   0.0   1.0   0.0   1.0   2.0
+# 1.0   0.0   1.0   0.0   1.0   2.0
+# 1.0   0.0   0.0   0.0   1.0   2.0
+# 1.4   1.0   1.0   1.0   1.4   2.2

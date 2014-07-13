@@ -13,7 +13,7 @@ class Image():
                 # x, y = self.x_coord(i), self.y_coord(i)
                 if i % self.xsize == 0 and i != 0:
                     img += "\n"
-                img += "%.1f " % self.val[i]
+                img += "%.1f   " % self.val[i]
             img += "\n"
         img += "(%d, %d, %d)\n" % (self.xsize, self.ysize, self.zsize)
         img += "N: %d" % (self.n())

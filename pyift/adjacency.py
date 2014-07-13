@@ -10,7 +10,7 @@ class Adjacency():
         return ", ".join(map(str, self.adj))
 
     def circular(self, img, radius):
-        # Expand to work with arbitrary radius. Only 4 for now.
+        # Expand to work with arbitrary radius.
         if radius == 1:
             self.adj = [0, 1, -img.xsize, -1, img.xsize]
         if radius == math.sqrt(2):
